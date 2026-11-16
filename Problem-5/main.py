@@ -1,76 +1,82 @@
-def shopping_list(basket:str) -> list[str]:
+def format_basket(basket: str) -> list[list]:
+    """Formats a basket to be a list of lists."""
 
-    if basket == "":
-            return []
-    
     basket_list = basket.split(";")
 
-    basket_list_tuple = []
+    formatted_basket = []
     for item in basket_list:
         item_list = item.split(":")
-        basket_list_tuple.append(item_list)
+        formatted_basket.append(item_list)
 
-    return basket_list_tuple
+    return formatted_basket
 
-def basket_total(basket: str) -> int:
-    """Returns the total price of a basket."""
+def basket_total(basket: str) -> float:
+    """Returns the total price of a basket of goods."""
+
+    formatted_basket = format_basket(basket)
 
     if basket == "":
         return 0.0
 
-    basket_list = shopping_list(basket)
-    
     total = 0
-    for item in basket_list:
+
+    for item in formatted_basket:
         quantity = int(item[1])
         price = float(item[2])
-        result = round(quantity * price, 2)
-        total += result
+
+        total += round(quantity * price, 2)
 
     return total
 
-def receipt(basket: str) -> str:
-    """Returns the receipt of a basket of goods."""
+def basket_dictionary(basket: str) -> dict:
+    """Converts a basket of goods into a dictionary."""
     if basket == "":
-         return ""
-    
-    total = basket_total(basket)
-    basket_list = shopping_list(basket)
+        return ""
 
+    formatted_basket = format_basket(basket)
 
-    basket_dict = {}
-    for item in basket_list:
-         grocery = item[0]
-         quantity = int(item[1])
-         price = float(item[2]) 
-         
-         if grocery in basket_dict:
-            basket_dict[grocery]["quantity"] += quantity
-            basket_dict[grocery]["price"] += quantity * price
-         else:
-            basket_dict[grocery] = {
-                 "quantity": quantity,
-                 "price": quantity * price
+    dict_basket = {}
+
+    for item in formatted_basket:
+        grocery = item[0].lower()
+        quantity = int(item[1])
+        price = float(item[2])
+        quantity_price = quantity * price
+
+        if grocery in dict_basket:
+            dict_basket[grocery]["quantity"] += quantity
+            dict_basket[grocery]["price"] += quantity_price
+        else:
+            dict_basket[grocery] = {
+                "quantity": quantity,
+                "price": quantity_price
             }
 
-    receipt_string = ""
+    return dict_basket
 
-    for grocery in sorted(basket_dict):
-        quantity = basket_dict[grocery]["quantity"]
-        price = basket_dict[grocery]["price"]
+def receipt(basket: str) -> str:
+    """Returns a basket of goods as a dictionary."""
 
-        receipt_string += f"{grocery.lower()} x{quantity} = {price:.2f}\n"
+    if basket == "":
+        return ""
+    
+    total = basket_total(basket)
+    basket_dict = basket_dictionary(basket)
 
-    receipt_string += f"TOTAL = {total:.2f}"
+    result = ""
+    for item in basket_dict:
+        grocery = item
+        quantity = basket_dict[item]["quantity"]
+        price = basket_dict[item]["price"]
 
-    return receipt_string
-        
+        result += f"{grocery} x{quantity} = {price:.2f}\n"
 
+    result += f"TOTAL = {total:.2f}"
 
+    return result
 
 if __name__ == "__main__":
-    print(basket_total("apple:2:0.50;bread:1:1.20"))
-    print(basket_total(""))
-
-    print(receipt("apple:2:0.50;bread:1:1.20"))
     print(receipt("apple:1:0.50;bread:1:1.20;apple:2:0.50"))
+
+        
+    

@@ -40,3 +40,4 @@ def test_receipt_multiple_same_item():
 def test_receipt_multiple_same_item_one_entry():
     basket = "apple:1:0.50;apple:2:0.50"
     assert receipt(basket) == "apple x3 = 1.50\nTOTAL = 1.50"
+
