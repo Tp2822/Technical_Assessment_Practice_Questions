@@ -20,6 +20,8 @@ python
 decode("Khoor, Zruog!", 3)  # "Hello, World!"
 encode("abc", 27)           # "bcd"
 encode("abc", -1)           # "zab"
+
+
 Step 3: Crack It
 
 crack(text) tries to guess the shift by assuming the most common letter in the text is e. Return (shift, decoded_text).
